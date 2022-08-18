@@ -2,3 +2,4 @@
 # .local/bin on setup
 # TODO: list your scripts which need to be on the PATH, one per line
 docktools.sh
+dockershell.sh

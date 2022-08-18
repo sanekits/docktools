@@ -9,4 +9,5 @@
 #   or anything which generates those files.
 kit_depends := \
     bin/docktools.bashrc \
-    bin/docktools.sh
+    bin/docktools.sh \
+	bin/dockershell.sh \

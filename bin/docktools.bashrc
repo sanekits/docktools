@@ -4,8 +4,7 @@ docktools-semaphore() {
     [[ 1 -eq  1 ]]
 }
 
-do-docktools() {
-    # TODO: This is a test function.  You can discard it.
-    docktools.sh
+docksh() {
+    #help: Enumerate running containers and open a shell by picking from a list
+    dockershell.sh "$@"
 }
-
