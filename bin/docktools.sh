@@ -27,8 +27,25 @@ die() {
 stub() {
    builtin echo "  <<< STUB[$*] >>> " >&2
 }
+do_help() {
+    local ver=$(docktools-version.sh | awk '{print $2}')
+    cat <<-EOF
+docktools ${ver} help:
+   docksh:  Start terminal on running container by picklist
+EOF
+}
 main() {
-    builtin echo "Hello docktools, shellkit edition: args:[$*]"
+    [[ -n $1 ]] && {
+        case $1 in
+            -h|--help)
+                do_help
+                exit
+                ;;
+            *)
+                die "Unknown arg: $1"
+        esac
+    }
+    do_help
 }
 
 [[ -z ${sourceMe} ]] && {
