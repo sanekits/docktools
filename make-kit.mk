@@ -11,3 +11,14 @@ kit_depends := \
     bin/docktools.bashrc \
     bin/docktools.sh \
 	bin/dockershell.sh \
+
+.PHONY: publish
+
+
+publish: pre-publish publish-common release-draft-upload release-list
+
+
+	@echo ">>>> publish complete OK.  <<<"
+	@echo ">>>> Manually publish the release from this URL when satisfied, <<<<"
+	@echo ">>>> and then change ./version to avoid accidental confusion. <<<<"
+	cat tmp/draft-url
