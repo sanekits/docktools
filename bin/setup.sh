@@ -34,7 +34,11 @@ die() {
 main() {
     Script=${scriptName} main_base "$@"
     builtin cd ${HOME}/.local/bin || die 208
-    # TODO: kit-specific steps can be added here
+
+    # Fetch completion for docker-compose:
+    mkdir -p ~/.bash_completion.d
+    echo "Downloading bash completion for docker-compose:"
+    curl -L https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose > ~/.bash_completion.d/docker-compose || echo "ERROR (non-fatal): failed installing shell completion for docker-compose" >&2
 }
 
 [[ -z ${sourceMe} ]] && {
