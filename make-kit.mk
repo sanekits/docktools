@@ -16,6 +16,7 @@ kit_depends := \
 
 pre-publish: test
 
+.PHONY: test
 test:
 	cd test && make -f taskrc.mk test
 
