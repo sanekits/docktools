@@ -14,10 +14,12 @@ kit_depends := \
 
 .PHONY: publish
 
+pre-publish: test
+
+test:
+	cd test && make -f taskrc.mk test
 
 publish: pre-publish publish-common release-draft-upload release-list
-
-
 	@echo ">>>> publish complete OK.  <<<"
 	@echo ">>>> Manually publish the release from this URL when satisfied, <<<<"
 	@echo ">>>> and then change ./version to avoid accidental confusion. <<<<"
