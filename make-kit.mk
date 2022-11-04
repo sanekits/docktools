@@ -18,7 +18,7 @@ pre-publish: test
 
 .PHONY: test
 test:
-	cd test && make -f taskrc.mk test
+	cd test && make -f taskrc.mk clean test
 
 publish: pre-publish publish-common release-draft-upload release-list
 	@echo ">>>> publish complete OK.  <<<"
