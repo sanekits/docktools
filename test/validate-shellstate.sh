@@ -49,7 +49,7 @@ group_1() {
         [[ $(id -u ) -eq $XUSER ]] || {
             _err "User != $XUSER"
         }
-        stub "ls .local/bin" "$(ls -al ~/.local/bin)"
+        #stub "ls .local/bin" "$(ls -al ~/.local/bin)"
         __log "User: $(id -u -n):$(id -u) vs. XUSER=$XUSER"
         __log $"PS1=[" $( bash -i -c 'echo "$PS1"' ) $"]"
         __log "PATH=$PATH"
@@ -79,6 +79,7 @@ main() {
 
     [[ $(__errCount) -eq 0 ]] && {
         __log "OK: No errors found in validate-shellstate.sh"
+        rm -rf ${Vsserrs}
     } || {
         cat ${Vsserrs}/*err
         echo " -- ^^ The following command produced the preceding errors:"

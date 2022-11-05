@@ -32,12 +32,12 @@ main() {
         [[ ${PIPESTATUS[0]} -eq 0 ]] || die "dcexec failed [$@] (user=$XUSER)"
     }
     dccopy() {
-        docker cp "$1" "$CONTAINER_NAME":/tmp/$2
+        docker exec -u root $CONTAINER_NAME mkdir -p $(dirname $2)
+        docker cp "$1" "$CONTAINER_NAME":$2
     }
-    dcexec mkdir -p /tmp/shellkit-boot || die "Failed creating /tmp/shellkit-boot in container $container_name"
     for kit in $(kit_list); do
-        XUSER=0 dccopy ~/.local/bin/$kit $kit || die "Failed copying $kit to container:/tmp"
-        dcexec bash -c /tmp/${kit}/setup.sh || die "Failed setup for kit $kit"
+        XUSER=0 dccopy ~/.local/bin/$kit /tmp/user-${XUSER}/$kit || die "Failed copying $kit to container"
+        dcexec bash -c /tmp/user-${XUSER}/${kit}/setup.sh || die "Failed setup for kit $kit"
     done
     echo bootstrap complete for $CONTAINER_NAME / $XUSER
 }
