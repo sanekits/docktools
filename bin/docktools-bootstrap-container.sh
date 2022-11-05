@@ -40,7 +40,6 @@ main() {
         docker exec -u root $CONTAINER_NAME mkdir -p $(dirname $2)
         docker cp "$1" "$CONTAINER_NAME":$2
     }
-    set -x
     for kit in ${kitlist[@]}; do
         XUSER=0 dccopy ~/.local/bin/$kit /tmp/user-${XUSER}/$kit || die "Failed copying $kit to container"
         dcexec bash -c /tmp/user-${XUSER}/${kit}/setup.sh || die "Failed setup for kit $kit"

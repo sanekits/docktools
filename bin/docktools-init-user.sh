@@ -7,6 +7,7 @@
 
 scriptName="$(readlink -f "$0")"
 scriptDir=$(command dirname -- "${scriptName}")
+PS4='\033[0;33m+(${BASH_SOURCE}:${LINENO}):\033[0m ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 die() {
     builtin echo "ERROR($(basename ${scriptName})): $*" >&2
@@ -31,6 +32,7 @@ create_user() {
 }
 
 main() {
+    set -x
     while [[ -n $1 ]]; do
         case $1 in
             --user) XUSER=$2; shift ;;
