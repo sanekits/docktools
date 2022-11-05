@@ -37,7 +37,7 @@ group_1() {
         __add_err "[group_1]" "$@"
     }
     (
-        "$CONTAINER_NAME:group_1 tests --->"
+        echo "$CONTAINER_NAME:group_1 tests --->"
         main_profile=~/.profile
         [[ -f ~/.bash_profile ]] && {
             [[ -f ~/.profile ]] && __add_err "Both .bash_profile and .profile exist"
@@ -51,13 +51,22 @@ group_1() {
         }
         __log "User: $(id -u -n):$(id -u) vs. XUSER=$XUSER"
         __log $"PS1=[" $( bash -i -c 'echo "$PS1"' ) $"]"
+        __log "PATH=$PATH"
 
-        _err "This code is unfinished"
+        echo 'true' > ~/.local/bin/vss-sniff || __add_err "Can't write vss-sniff to ~/.local/bin/vss-sniff"
+        chmod +x ~/.local/bin/vss-sniff || __add_err "Can't chmod vss-sniff +x"
+        vss-sniff || __add_err "Failed executing vss-sniff: maybe ~/.local/bin is not on the PATH?"
+
 
     )
 }
 
 main() {
+    echo
+    echo
+    echo "${scriptName} start: $CONTAINER_NAME / $XUSER"
+    echo "============================================="
+
     mkdir -p .vss-errs;  rm -rf .vss-errs/* &>/dev/null
 
     group_1
