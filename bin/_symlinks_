@@ -2,3 +2,4 @@
 # .local/bin on setup
 docktools.sh
 dockershell.sh
+docktools-bootstrap-container.sh
