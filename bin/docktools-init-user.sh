@@ -25,7 +25,7 @@ create_user() {
     [[ $xuid -ne 1000 ]] && {
         username="user$xuid"
     }
-    useradd -u $xuid $username 2>/dev/null || die "Failed creating user $xuid $username"
+    useradd -u $xuid -m $username 2>/dev/null || die "Failed creating user $xuid $username"
     [[ $(id -u -n $xuid) -eq $username ]] || die "User name fails to match after useradd for $username:$xuid"
     [[ $(id -u $username) -eq $xuid ]] || die "User id fails to match after useradd for $username:$xuid"
     echo "User added: $username:$xuid"
