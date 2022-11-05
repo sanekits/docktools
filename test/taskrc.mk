@@ -30,8 +30,14 @@ test-container-bootstrap:
 		-w /workspace \
 		docktools-test:1 \
 		bash -c './init-test-users.sh $(HOST_UID) && sleep infinity;'
-	sleep 1
 	./bootstrap-container.sh docktools-test1
+	echo "Infinite wait for tests:"
+	sleep infinity
+
+.PHONY: validate-container-shellstate
+validate-container-shellstate:
+	./validate-container-bootstrap.sh docktools-test1 -u 0
+	./validate-container-bootstrap.sh docktools-test1 -u $(HOST_UID)
 
 .PHONY: test
 test: test-container-bootstrap
