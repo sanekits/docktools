@@ -5,7 +5,8 @@
 absdir := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 SHELL := /bin/bash
 REMAKE := $(MAKE) -C $(absdir) -s -f $(lastword $(MAKEFILE_LIST))
-HOST_UID := $(shell echo $$UID)
+
+HOST_UID := 0
 
 .PHONY: help
 help:
@@ -20,30 +21,49 @@ help:
 	@echo -e "CURDIR=\t\t$(CURDIR)"
 	@echo -e "taskrc_dir=\t$${taskrc_dir}"
 
-.PHONY: test-container-bootstrap
-test-container-bootstrap:
-	# Spin up a bare container and bootstrap a usable shell with sane defaults
-	docker run  -d --rm --init \
+.PHONY: start-test-container
+start-test-container:
+	# Spin up a bare container and add requested user
+	set -x; docker run  -d --rm --init \
 		--name docktools-test1 \
 		-v $(absdir):/workspace \
 		-u root \
 		-w /workspace \
 		docktools-test:1 \
-		bash -c './init-test-users.sh $(HOST_UID) && sleep infinity;'
-	./bootstrap-container.sh docktools-test1
-	echo "Infinite wait for tests:"
-	sleep infinity
+		bash -c './init-test-user.sh --user $(HOST_UID) ; sleep infinity;'
+	sleep 1
+
+.PHONY: test-container-bootstrap
+test-container-bootstrap:
+	set -x; ./bootstrap-container.sh --container-name docktools-test1 --user $(HOST_UID)
+	docker ps
+	set -x; $(MAKE) -f taskrc.mk \
+		HOST_UID=$(HOST_UID) \
+		validate-container-shellstate
+	#docker stop docktools-test1
+
+.PHONY: test-container-bootstrap-0
+test-container-bootstrap-0:
+	$(MAKE) -f taskrc.mk HOST_UID=0 test-container-bootstrap
+
+
+.PHONY: test-container-bootstrap-1000
+test-container-bootstrap-1000:
+	$(MAKE) -f taskrc.mk HOST_UID=1000 test-container-bootstrap
 
 .PHONY: validate-container-shellstate
 validate-container-shellstate:
-	./validate-container-bootstrap.sh docktools-test1 -u 0
-	./validate-container-bootstrap.sh docktools-test1 -u $(HOST_UID)
+	xopts="-e CONTAINER_NAME=docktools-test1 -e XUSER=$(HOST_UID)"; \
+		docker exec -u $(HOST_UID) $$xopts -i docktools-test1 bash -l ./validate-shellstate.sh
+
 
 .PHONY: test
-test: test-container-bootstrap
+test: clean
+	$(MAKE) -f taskrc.mk clean test-container-bootstrap-1000
+#	$(MAKE) -f taskrc.mk clean test-container-bootstrap-0
 
 
 
 .PHONY: clean
 clean:
-	-docker kill docktools-test1
+	-docker kill docktools-test1 2>/dev/null

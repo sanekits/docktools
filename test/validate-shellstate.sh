@@ -18,17 +18,18 @@ stub() {
    builtin echo "  <<< STUB[$*] >>> " >&2
 }
 
+Vsserrs=/tmp/vsserrs
 
 __log() {
     echo "   INFO: $@" >&2
 }
 __errCount() {
-    ls .vss-errs | wc -l
+    ls $Vsserrs | wc -l
 }
 
 __add_err() {
     local cnt=$(( $(__errCount) + 1 ))
-    echo "Error($cnt): $@" > .vss-errs/_${cnt}.err
+    echo "Error($cnt): $@" > ${Vsserrs}/_${cnt}.err
 }
 
 group_1() {
@@ -44,19 +45,22 @@ group_1() {
             main_profile=~/.bash_profile
             source ~/.bash_profile
         }
-        __log main_profile=~main_profile
-        kuser="$(id -u -n):$(id -u)"
+        __log main_profile=${main_profile}
         [[ $(id -u ) -eq $XUSER ]] || {
             _err "User != $XUSER"
         }
+        stub "ls .local/bin" "$(ls -al ~/.local/bin)"
         __log "User: $(id -u -n):$(id -u) vs. XUSER=$XUSER"
         __log $"PS1=[" $( bash -i -c 'echo "$PS1"' ) $"]"
         __log "PATH=$PATH"
 
-        echo 'true' > ~/.local/bin/vss-sniff || __add_err "Can't write vss-sniff to ~/.local/bin/vss-sniff"
-        chmod +x ~/.local/bin/vss-sniff || __add_err "Can't chmod vss-sniff +x"
-        vss-sniff || __add_err "Failed executing vss-sniff: maybe ~/.local/bin is not on the PATH?"
-
+        (
+            set clobber
+            cd ~/.local/bin || __add_err "Can't cd to ~/.local/bin"
+            echo 'true' > ./vss-sniff || __add_err "Can't write ./vss-sniff"
+            chmod +x ./vss-sniff || __add_err "Can't chmod vss-sniff +x"
+        )
+        which vss-sniff || __add_err "Failed executing vss-sniff: maybe ~/.local/bin is not on the PATH?"
 
     )
 }
@@ -67,18 +71,21 @@ main() {
     echo "${scriptName} start: $CONTAINER_NAME / $XUSER"
     echo "============================================="
 
-    mkdir -p .vss-errs;  rm -rf .vss-errs/* &>/dev/null
+    mkdir -p ${Vsserrs}
+    chown $XUSER ${Vsserrs} -R || die "Can't chown ${Vsserrs} as $XUSER"
+    rm -rf ${Vsserrs}/* &>/dev/null
 
     group_1
 
     [[ $(__errCount) -eq 0 ]] && {
         __log "OK: No errors found in validate-shellstate.sh"
     } || {
-        cat .vss-errs/*err
+        cat ${Vsserrs}/*err
         echo " -- ^^ The following command produced the preceding errors:"
         echo "Command: ${scriptName} $@"
         echo " -- ^^ ...with Environment:"
         env | sed 's/^/     [env] /'
+        exit 4
     }
 }
 
