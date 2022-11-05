@@ -27,10 +27,11 @@ start-test-container:
 	set -x; docker run  -d --rm --init \
 		--name docktools-test1 \
 		-v $(absdir):/workspace \
+		-v $(absdir/../bin):/workspace/bin \
 		-u root \
 		-w /workspace \
 		docktools-test:1 \
-		bash -c './init-test-user.sh --user $(HOST_UID) ; sleep infinity;'
+		bash -c 'bin/init-test-user.sh --user $(HOST_UID) ; sleep infinity;'
 	sleep 1
 
 .PHONY: test-container-bootstrap

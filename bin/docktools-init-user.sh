@@ -1,6 +1,9 @@
 #!/bin/bash
-# init-test-user.sh
-#
+# docktools-init-user.sh
+#  Given a user ID, this script creates the user account
+# in the container if it doesn't already exist.
+# No customization of user environment is performed.
+#  e.g. `cat docktools-init-user.sh | docker exec -i my-container bash -s -- --user 1000`
 
 scriptName="$(readlink -f "$0")"
 scriptDir=$(command dirname -- "${scriptName}")
@@ -35,8 +38,6 @@ main() {
         shift
     done
     [[ -n $XUSER ]] || die "Expected --user arg"
-    local already_users=$( cd /home && ls )
-    #stub "already_users" $already_users
     id $XUSER || create_user $XUSER
     grep "/home/$XUSER" /etc/passwd | awk -F ':' '{print  $1 " " $3}'
 }
