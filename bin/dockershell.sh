@@ -102,9 +102,9 @@ parseArgs() {
     local user=
     local user_id=
     local kits=
+    set -x
     while [[ -n $1 ]]; do
         case $1 in
-            -h|--help) usage; exit 1;;
             -u|--user) user=$2; shift ;;
             -i|--uid) user_id=$2; shift ;;
             -k|--kits) kits="$2"; shift ;;
@@ -112,6 +112,7 @@ parseArgs() {
         esac
         shift
     done
+    set +x
     printf "%s:" "$container" "$user" "$user_id" "$kits"
 }
 
@@ -167,6 +168,9 @@ launch_shell() {
 }
 
 if [[ -z $sourceMe ]]; then
+    case $1 in
+        -h|--help) usage; exit 1;;
+    esac
     IFS=':' ; read container user user_id kits < <(parseArgs "$@"); unset IFS
 
     IFS=':' ; read container user user_id kits < <(prepare_context "$container" "$user" "$user_id" "$kits"); unset IFS
