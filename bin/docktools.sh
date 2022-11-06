@@ -27,13 +27,20 @@ die() {
 stub() {
    builtin echo "  <<< STUB[$*] >>> " >&2
 }
+
 do_help() {
     local ver=$(docktools-version.sh | awk '{print $2}')
     cat <<-EOF
 docktools ${ver} help:
    docksh:  Start terminal on running container by picklist
+   docktools-init-user.sh:  Create user inside container
+   docktools-bootstrap-container.sh: Install kits into container
+   dk: alias for 'docker'
+   dc: alias for 'docker-compose'
+   dockstat: alias showing container stats
 EOF
 }
+
 main() {
     [[ -n $1 ]] && {
         case $1 in

@@ -12,6 +12,7 @@ docksh() {
 alias dc=docker-compose
 alias docker-containers-status='docker stats --no-stream -a'
 alias dk=docker
+alias dockstat='docker stats --no-stream -a'
 
 complete -F _complete_alias dk
 complete -F _complete_alias dc
