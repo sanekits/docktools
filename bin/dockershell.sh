@@ -102,7 +102,6 @@ parseArgs() {
     local user=
     local user_id=
     local kits=
-    set -x
     while [[ -n $1 ]]; do
         case $1 in
             -u|--user) user=$2; shift ;;
