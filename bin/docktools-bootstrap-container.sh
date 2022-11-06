@@ -37,6 +37,7 @@ main() {
         [[ ${PIPESTATUS[0]} -eq 0 ]] || die "dcexec failed [$@] (user=$XUSER)"
     }
     dccopy() {
+        docker exec -u root $CONTAINER_NAME bash -c "rm -rf $(dirname $2)/* &>/dev/null"
         docker exec -u root $CONTAINER_NAME mkdir -p $(dirname $2)
         docker cp "$1" "$CONTAINER_NAME":$2
     }

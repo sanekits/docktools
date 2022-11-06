@@ -174,6 +174,8 @@ if [[ -z $sourceMe ]]; then
 
     IFS=':' ; read container user user_id kits < <(prepare_context "$container" "$user" "$user_id" "$kits"); unset IFS
 
+    [[ -n $container ]] || exit 1
+
     [[ -n $kits ]] && {
         install_container_kits "$container" "$user" "$user_id" "$kits"
     }
