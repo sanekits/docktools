@@ -2,7 +2,11 @@
 # dockershell.sh -- open a shell or run shell command on a docker container.
 # suggest alias 'docksh'
 
+
+scriptName="$(readlink -f "$0")"
+scriptDir=$(command dirname -- "${scriptName}")
 Script="docksh"
+
 PS4='\033[0;33m+(${BASH_SOURCE}:${LINENO}):\033[0m ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
 
 die() {
@@ -15,11 +19,9 @@ stub() {
     #   stub "${FUNCNAME[0]}.${LINENO}" "$@" "<Put your message here>"
     #
     [[ -n $NoStubs ]] && return
-    builtin echo -n "  <<< STUB" >&2
-    for arg in "$@"; do
-        echo -n "[${arg}] " >&2
-    done
-    echo " >>> " >&2
+    builtin printf "  <<< STUB" >&2
+    builtin printf "[%s] " "$@" >&2
+    builtin printf " >>>\n" >&2
 }
 
 usage() {
@@ -134,10 +136,44 @@ prepare_context() {
     printf "%s:" "$container" "$user" "$user_id" "$kits"
 }
 
+install_container_kits() {
+    # Install given kits into container as given user.   If
+    # both 'user_id' and 'user' are provided, the former takes precedence.
+    # Fails if user is not root and chosen user doesn't exist.
+    local container=$1
+    local user=$2
+    local user_id=$3
+    local kits=$4
+    local u_kits
+    IFS=$', '; u_kits=$(echo $kits); unset IFS
+    local xuser=$user
+    [[ -n $user_id ]] && xuser=$user_id
+
+    docktools-bootstrap-container.sh  \
+        --container-name $container \
+        --user $xuser \
+        $u_kits
+
+}
+
+launch_shell() {
+    # Given a container and user, open a shell for that user in the container.
+    local container=$1
+    local user=$2
+    local user_id=$3
+    local xuser=$user
+    [[ -n $user_id ]] && xuser=$user_id
+    docker exec -it -u "$xuser" "$container" bash -l
+}
+
 if [[ -z $sourceMe ]]; then
     IFS=':' ; read container user user_id kits < <(parseArgs "$@"); unset IFS
 
     IFS=':' ; read container user user_id kits < <(prepare_context "$container" "$user" "$user_id" "$kits"); unset IFS
-    printf "%s:" "$container" "$user" "$user_id" "$kits"
 
+    [[ -n $kits ]] && {
+        install_container_kits "$container" "$user" "$user_id" "$kits"
+    }
+    launch_shell "$container" "$user" "$user_id"
 fi
+
