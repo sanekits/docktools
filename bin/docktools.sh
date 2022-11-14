@@ -33,6 +33,8 @@ do_help() {
     cat <<-EOF
 docktools ${ver} help:
    docksh:  Start terminal on running container by picklist
+   docktools-shellkit-install.sh: Install kits by name while inside container
+        a.k.a 'dockins', e.g. 'dockins -k cdpp,localhist'
    docktools-init-user.sh:  Create user inside container
    docktools-bootstrap-container.sh: Install kits into container
    dk: alias for 'docker'
