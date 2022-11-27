@@ -30,3 +30,8 @@ in_docker_container && {
 complete -F _complete_alias dk
 complete -F _complete_alias dc
 complete -F _complete_alias docker-containers-status
+
+docker-history() {
+    #Help show container or image history without truncation or junk whitespace
+    command docker history --no-trunc "$1" | tr -s ' '
+}

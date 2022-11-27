@@ -40,6 +40,7 @@ docktools ${ver} help:
    dk: alias for 'docker'
    dc: alias for 'docker-compose'
    dockstat: alias showing container stats
+   docker-history: show container or image history without truncation or junk whitespace
 EOF
 }
 
