@@ -41,6 +41,7 @@ docktools ${ver} help:
    dc: alias for 'docker-compose'
    dockstat: alias showing container stats
    docker-history: show container or image history without truncation or junk whitespace
+   install-docker-dive.sh: Installs the docker-dive tool from github.com
 EOF
 }
 

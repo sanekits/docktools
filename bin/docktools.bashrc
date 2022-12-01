@@ -33,5 +33,6 @@ complete -F _complete_alias docker-containers-status
 
 docker-history() {
     #Help show container or image history without truncation or junk whitespace
+    [[ $# -eq 0 ]] && return $(die "Expected container or image name")
     command docker history --no-trunc "$1" | tr -s ' '
 }

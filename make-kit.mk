@@ -20,6 +20,8 @@ pre-publish: test
 test:
 	cd test && make -f taskrc.mk clean test
 
+publish: conformity-check
+
 publish: pre-publish publish-common release-draft-upload release-list
 	@echo ">>>> publish complete OK.  <<<"
 	@echo ">>>> Manually publish the release from this URL when satisfied, <<<<"

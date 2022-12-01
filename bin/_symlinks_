@@ -4,3 +4,4 @@ docktools.sh
 dockershell.sh
 docktools-bootstrap-container.sh
 docktools-shellkit-install.sh
+install-docker-dive.sh
