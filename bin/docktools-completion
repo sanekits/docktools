@@ -1,0 +1,42 @@
+# docktools-completion
+# vim: filetype=sh :
+# Bash autocomplete for docktools
+# Symlink this into ~/.bash_completion.d/docktools
+
+
+
+# docktools-autocomplete
+
+
+# stub922() {
+#     echo -n "stub922: " >/dev/pts/8
+#     printf "<%s> " "$@" >/dev/pts/8
+#     echo > /dev/pts/8
+# }
+
+_dksh_list_kits() {
+    ( cd $HOME/.local/bin && command ls */Kitname | command xargs dirname )
+}
+
+_dockershell() { # Shell completion for dockershell.sh. Place this file in ~/.bash_completion.d/docktools
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    #stub922 words "cw=" "$COMP_CWORD" "wx=" "${COMP_WORDS[COMP_CWORD - 1]}" "words=" "${COMP_WORDS[@]}"
+
+    # The main job is usually to set 'opts' to the set of meaningful commands:
+    if (( COMP_CWORD == 1 )); then
+        opts="$(docker ps --format '{{.Names}}' )"
+    elif [[ ${COMP_WORDS[COMP_CWORD - 1]} == "-u" ]]; then
+        opts=$(dockershell.sh --show-users-in-container ${COMP_WORDS[1]} | awk -F ':' '{print $1}' )
+    elif [[ ${COMP_WORDS[COMP_CWORD - 1]} == "-k" ]]; then
+        opts="$( _dksh_list_kits )"
+    else
+        opts="-u -k"
+    fi
+    COMPREPLY=( $(compgen -W "${opts}" -- "${cur}" ) )
+    return 0
+}
+
+complete -F _dockershell dockershell.sh
+complete -F _dockershell docksh

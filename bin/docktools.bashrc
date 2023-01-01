@@ -12,10 +12,7 @@ in_docker_container() {
     grep -sq 'docker' /proc/1/cgroup
 }
 
-docksh() {
-    #help: Enumerate running containers and open a shell by picking from a list
-    dockershell.sh "$@"
-}
+alias docksh=dockershell.sh
 
 alias dc=docker-compose
 alias docker-containers-status='docker stats --no-stream -a'
@@ -30,6 +27,7 @@ in_docker_container && {
 complete -F _complete_alias dk
 complete -F _complete_alias dc
 complete -F _complete_alias docker-containers-status
+complete -F _complete_alias docksh
 
 docker-history() {
     #Help show container or image history without truncation or junk whitespace

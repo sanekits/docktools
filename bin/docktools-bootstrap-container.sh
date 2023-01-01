@@ -45,7 +45,6 @@ main() {
         XUSER=0 dccopy ~/.local/bin/$kit /tmp/user-${XUSER}/$kit || die "Failed copying $kit to container"
         dcexec bash -c /tmp/user-${XUSER}/${kit}/setup.sh || die "Failed setup for kit $kit"
     done
-    echo bootstrap complete for $CONTAINER_NAME / $XUSER
 }
 
 [[ -z ${sourceMe} ]] && {
