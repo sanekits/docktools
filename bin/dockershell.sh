@@ -14,23 +14,13 @@ die() {
     exit 1
 }
 
-stub() {
-    # Print debug output to stderr.  Call like this:
-    #   stub "${FUNCNAME[0]}.${LINENO}" "$@" "<Put your message here>"
-    #
-    [[ -n $NoStubs ]] && return
-    builtin printf "  <<< STUB" >&2
-    builtin printf "[%s] " "$@" >&2
-    builtin printf " >>>\n" >&2
-}
-
 usage() {
     cat <<-EOF
 $Script
     > Present a list of containers+users, open a shell
 $Script my-container
     > Open shell in my-container as root
-$Script my-container -u vscode -k ps1-foo,cdpp
+$Script my-container -u vscode -k ps1-foo cdpp
     > Init the shell with list of kits and selected user
 $Script -i 1000
     > Present list of containers, open shell with uid 1000
@@ -101,18 +91,17 @@ parseArgs() {
     local container=
     local user=
     local user_id=
-    local kits=
+    local kits=()
     while [[ -n $1 ]]; do
         case $1 in
             -u|--user) user=$2; shift ;;
             -i|--uid) user_id=$2; shift ;;
-            -k|--kits) kits="$2"; shift ;;
+            -k|--kits) shift; kits+=( "$@" ); break 2;;
             *) container=$1 ;;
         esac
         shift
     done
-    set +x
-    printf "%s:" "$container" "$user" "$user_id" "$kits"
+    printf "%s:" "$container" "$user" "$user_id" "${kits[@]}"
 }
 
 prepare_context() {
@@ -124,7 +113,8 @@ prepare_context() {
     local container=$1
     local user=$2
     local user_id=$3
-    local kits=$4
+    shift 3
+    local kits=( "$@" )
 
     [[ -n $container ]] || {
         [[ -n $user || -n $user_id ]] && {
@@ -133,7 +123,7 @@ prepare_context() {
             read container user user_id < <(pick_container_and_user)
         }
     }
-    printf "%s:" "$container" "$user" "$user_id" "$kits"
+    printf "%s:" "$container" "$user" "$user_id" "${kits[@]}"
 }
 
 install_container_kits() {
@@ -167,17 +157,19 @@ launch_shell() {
 }
 
 if [[ -z $sourceMe ]]; then
+    echo "args" "$@"
     case $1 in
         -h|--help) usage; exit 1;;
         --show-users-in-container) shift; show_users_in_container "$1"; exit;;
     esac
     IFS=':' ; read container user user_id kits < <(parseArgs "$@"); unset IFS
+    echo "kits=${kits[@]}"
 
     IFS=':' ; read container user user_id kits < <(prepare_context "$container" "$user" "$user_id" "$kits"); unset IFS
 
     [[ -n $container ]] || exit 1
 
-    [[ -n $kits ]] && {
+    [[ -n "$kits" ]] && {
         install_container_kits "$container" "$user" "$user_id" "$kits"
     }
     launch_shell "$container" "$user" "$user_id"

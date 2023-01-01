@@ -14,6 +14,10 @@
 #     echo > /dev/pts/8
 # }
 
+_dksh_list_kits() {
+    ( cd $HOME/.local/bin && command ls */Kitname | command xargs dirname )
+}
+
 _dockershell() { # Shell completion for dockershell.sh. Place this file in ~/.bash_completion.d/docktools
     local cur prev opts
     COMPREPLY=()
@@ -26,7 +30,7 @@ _dockershell() { # Shell completion for dockershell.sh. Place this file in ~/.ba
     elif [[ ${COMP_WORDS[COMP_CWORD - 1]} == "-u" ]]; then
         opts=$(dockershell.sh --show-users-in-container ${COMP_WORDS[1]} | awk -F ':' '{print $2}' )
     elif [[ ${COMP_WORDS[COMP_CWORD - 1]} == "-k" ]]; then
-        opts="ps1-foo bashics"
+        opts="$( _dksh_list_kits )"
     else
         opts="-u -k"
     fi
