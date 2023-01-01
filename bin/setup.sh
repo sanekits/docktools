@@ -49,6 +49,14 @@ main() {
     } || {
         echo "ERROR (non-fatal): docker-compose not installed, so I can't setup shell completion for it."
     }
+
+    # FINALIZE: perms on ~/.local/bin/<Kitname>.  We want others/group to be
+    # able to traverse dirs and exec scripts, so that a source installation can
+    # be replicated to a dest from the same file system (e.g. docker containers,
+    # nfs-mounted home nets, etc)
+    command chmod og+rX ${HOME}/.local/bin/${Kitname} -R
+    command chmod og+rX ${HOME}/.local ${HOME}/.local/bin
+    true
 }
 
 [[ -z ${sourceMe} ]] && {
