@@ -127,6 +127,5 @@ _install_container_kits() {
         --container-name $container \
         --user $xuser \
         $kits"
-    echo "stub[$cmd]" >&2
     eval "$cmd"
 }
