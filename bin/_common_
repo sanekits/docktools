@@ -123,6 +123,8 @@ _install_container_kits() {
         && xuser=$user_id
 
 
+    [[ -z "$kits" ]] && \
+        return
     local cmd="docktools-bootstrap-container.sh  \
         --container-name $container \
         --user $xuser \

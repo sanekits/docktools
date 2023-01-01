@@ -71,7 +71,7 @@ if [[ -z $sourceMe ]]; then
     #echo "args" "$@"
     case $1 in
         -h|--help) usage; exit 1;;
-        --show-users-in-container) shift; show_users_in_container "$1"; exit;;
+        --show-users-in-container) shift; _show_users_in_containers "$1"; exit;;
     esac
     IFS=':' ; read container user user_id kits < <(parseArgs "$@"); unset IFS
     #echo "kits=${kits[@]}"
