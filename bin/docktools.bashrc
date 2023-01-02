@@ -25,10 +25,8 @@ in_docker_container && {
     alias dockins='${HOME}/.local/bin/docktools-shellkit-install.sh'
 }
 
-complete -F _complete_alias dk
-complete -F _complete_alias dc
-complete -F _complete_alias docker-containers-status
-complete -F _complete_alias docksh
+[[ -f ~/.bash_completion.d/docktools ]] \
+    && source ~/.bash_completion.d/docktools
 
 docker-history() {
     #Help show container or image history without truncation or junk whitespace

@@ -31,24 +31,39 @@ die() {
     builtin exit 1
 }
 
+setup_dockmk() {
+    local recipeRoot="$($HOME/.local/bin/$Kitname/docker-make-container.sh --recipe-root)"
+    mkdir -p "$recipeRoot"
+    [[ -d "$recipeRoot" ]] \
+        || die "Failed to create recipeRoot=$recipeRoot"
+    cp ${scriptDir}/sample-recipe.mk "${recipeRoot}" \
+        || die Failed creating sample recipe
+}
+
 main() {
     Script=${scriptName} main_base "$@"
     builtin cd ${HOME}/.local/bin || die 208
 
     # Fetch completion for docker-compose:
     mkdir -p ~/.bash_completion.d
-    which docker-compose &>/dev/null && {
-        echo "Docker-compose is installed. Attempting to setup shell completion for it:" >&2
-        local xurl="https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose"
-        curl --connect-timeout 3 -I "$xurl" &>/dev/null && {
-            curl -L https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose > ~/.bash_completion.d/docker-compose || echo "ERROR (non-fatal): failed installing shell completion for docker-compose" >&2
-            echo "Shell completion for docker-composed installed: OK"
-        } || {
-            echo "ERROR (non-fatal): can't connect to download docker-compose completion from [ $xurl ]" >&2
-        }
-    } || {
+    if which docker-compose &>/dev/null; then
+        if !  bash -ic 'complete -p docker-compose' &>/dev/null ; then
+            echo "Docker-compose is installed. Attempting to setup shell completion for it:" >&2
+            local xurl="https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose"
+            curl --connect-timeout 3 -I "$xurl" &>/dev/null && {
+                curl -L https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose > ~/.bash_completion.d/docker-compose || echo "ERROR (non-fatal): failed installing shell completion for docker-compose" >&2
+                echo "Shell completion for docker-compose installed: OK"
+            } || {
+                echo "ERROR (non-fatal): can't connect to download docker-compose completion from [ $xurl ]" >&2
+            }
+        else
+            echo "docker-compose with completion is installed."
+        fi
+    else
         echo "ERROR (non-fatal): docker-compose not installed, so I can't setup shell completion for it."
-    }
+    fi
+
+    setup_dockmk
 
     # FINALIZE: perms on ~/.local/bin/<Kitname>.  We want others/group to be
     # able to traverse dirs and exec scripts, so that a source installation can

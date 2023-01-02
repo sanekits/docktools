@@ -38,5 +38,29 @@ _dockershell() { # Shell completion for dockershell.sh. Place this file in ~/.ba
     return 0
 }
 
+_docker_make_container() {
+    # Shell completion for docker-make-container.sh
+    local dockmk_sh=${HOME}/.local/bin/docktools/docker-make-container.sh
+    local cur prev opts
+    local main_flags="-h --help --edit-recipe --list-recipes --make-recipe --recipe-path --recipe-root"
+    local recipes=$( $dockmk_sh --list-recipes )
+    COMPREPLY=();
+    cur="${COMP_WORDS[COMP_CWORD]}";
+    prev="${COMP_WORDS[COMP_CWORD-1]}";
+
+    local cur prev opts
+    case $prev in
+        --recipe-path|--edit-recipe|-h|--help)
+            opts="$recipes" ;;
+        *)
+            opts="${recipes} ${main_flags}"
+            ;;
+    esac
+    COMPREPLY=($(compgen -W "${opts}" -- "${cur}" ));
+    return 0
+}
+
 complete -F _dockershell dockershell.sh
 complete -F _dockershell docksh
+complete -F _docker_make_container docker-make-container.sh
+complete -F _docker_make_container dockmk
