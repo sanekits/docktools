@@ -13,6 +13,7 @@ in_docker_container() {
 }
 
 alias docksh=dockershell.sh
+alias dockmk=docker-make-container.sh
 
 alias dc=docker-compose
 alias docker-containers-status='docker stats --no-stream -a'

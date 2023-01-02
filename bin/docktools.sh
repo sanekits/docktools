@@ -32,11 +32,14 @@ do_help() {
     local ver=$(docktools-version.sh | awk '{print $2}')
     cat <<-EOF
 docktools ${ver} help:
-   docksh:  Start terminal on running container by picklist
+   dockershell.sh Start terminal on running container by picklist
+        a.k.a. 'docksh'
    docktools-shellkit-install.sh: Install kits by name while inside container
-        a.k.a 'dockins', e.g. 'dockins -k cdpp,localhist'
+        a.k.a 'dockins'
    docktools-init-user.sh:  Create user inside container
    docktools-bootstrap-container.sh: Install kits into container
+   docker-make-container.sh: Create a container from a recipe
+        a.k.a. 'dockmk'
    dk: alias for 'docker'
    dc: alias for 'docker-compose'
    dockstat: alias showing container stats
