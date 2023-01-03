@@ -47,7 +47,7 @@ main() {
     # Fetch completion for docker-compose:
     mkdir -p ~/.bash_completion.d
     if which docker-compose &>/dev/null; then
-        if !  bash -ic 'complete -p docker-compose' &>/dev/null ; then
+        if !  HISTFILE= bash -ic 'complete -p docker-compose' &>/dev/null ; then
             echo "Docker-compose is installed. Attempting to setup shell completion for it:" >&2
             local xurl="https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose"
             curl --connect-timeout 3 -I "$xurl" &>/dev/null && {
