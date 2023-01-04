@@ -98,18 +98,16 @@ run_recipe() {
         -f ${KitRoot}/docker-make-container.mk \
         -f ${recipe_path}  \
         )
-    [[ -n $RunCommand ]] \
-        && cmd+=( RunCommand="\"echo hello\""  )
+    if [[ -n $RunCommand ]]; then
+        cmd+=( RunCommand="\"echo hello\""  )
+    fi
 
     [[ $# -gt 0 ]] \
         && cmd+=( "$@" )
 
-    cmd+=( container )
+    cmd+=( container bash )
 
-    echo "${cmd[@]}"
-    set -x
     ${cmd[@]}
-    set +x
 }
 
 main() {
