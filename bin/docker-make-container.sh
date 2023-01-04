@@ -12,6 +12,8 @@ RecipeCfg=${RecipeRoot}/config
 OrigTemplate=${KitRoot}/template-recipe.mk
 BaseMakefile=${KitRoot}/docker-make-container.mk
 
+RunCommand=
+
 die() {
     builtin echo "ERROR($(basename ${scriptName})): $*" >&2
     builtin exit 1
@@ -92,20 +94,30 @@ run_recipe() {
         || die "No such recipe [$recipe].  Try --list-recipes"
 
     local recipe_path=$(get_recipe_path $recipe)
-    local cmd="make \
+    local cmd=( make \
         -f ${KitRoot}/docker-make-container.mk \
-        -f "${recipe_path}" \
-        container \
-        $@ \
-        "
-    echo "stub-cmd[$cmd]" >&2
-    eval "$cmd"
+        -f ${recipe_path}  \
+        )
+    [[ -n $RunCommand ]] \
+        && cmd+=( RunCommand="\"echo hello\""  )
+
+    [[ $# -gt 0 ]] \
+        && cmd+=( "$@" )
+
+    cmd+=( container )
+
+    echo "${cmd[@]}"
+    set -x
+    ${cmd[@]}
+    set +x
 }
 
 main() {
     local recipe yesmode
     while [[ -n $1 ]]; do
-        case $1 in
+        set -x
+        case "$1" in
+            -c|--command) shift; RunCommand="$1" ;;
             --list-recipes) shift; list_recipes "$@"; exit ;;
             --recipe-root) echo $RecipeRoot; exit;;
             --recipe-path) shift; get_recipe_path "$@"; exit ;;
@@ -116,11 +128,15 @@ main() {
             *)
                 recipe_exists "$1" \
                     || die "Unknown recipe name: $1 ( try --list-recipes )"
-                run_recipe "$@"
+                recipe="$1"
                 ;;
         esac
+        set +x
         shift
     done
+    [[ -n $recipe ]] \
+        || die "No recipe specified"
+    run_recipe $recipe
 }
 
 [[ -z ${sourceMe} ]] && {

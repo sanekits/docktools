@@ -47,5 +47,5 @@ image: image-pull
 	};
 
 container: image
-	@docker run $(Remove) $(Iterm) $(Volumes) $(ImageName):$(ImageTag) $(RunCommand)
-	echo "$(ContainerName) created OK"
+	docker run $(Remove) $(Iterm) $(Volumes) $(ExtraVols) '$(ImageName):$(ImageTag)' '$(RunCommand)'
+
