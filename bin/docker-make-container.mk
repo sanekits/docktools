@@ -37,7 +37,7 @@ help: default-help help-options
 .PHONY: image-pull
 image-pull:
 	@if $(PullImage); then \
-		docker pull $(ImageName):$(ImageTag); \
+		docker pull $(ImageName):$(ImageTag) >&2; \
 	fi;
 
 .PHONY: image
@@ -48,7 +48,7 @@ image: image-pull
 	};
 
 container: image
-	docker run \
+	@docker run \
 		$(Remove) \
 		$(Iterm) \
 		$(Volumes) \

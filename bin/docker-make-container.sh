@@ -109,7 +109,7 @@ run_recipe() {
         cmd+=( RunCommand=/cmdline.sh )
     fi
 
-    echo "${cmd[@]}"
+    #echo "${cmd[@]}"
     eval "${cmd[@]}"
 }
 
