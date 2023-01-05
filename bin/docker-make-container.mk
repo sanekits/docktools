@@ -12,6 +12,7 @@ ImageName := alpine
 ImageTag := latest
 Remove := --rm
 Iterm := -it
+CmdMount :=
 Volumes := \
 	-v $(HOME)/.local/bin:/host_locbin \
 	-v $(HOME):/host_home:ro \
@@ -47,5 +48,12 @@ image: image-pull
 	};
 
 container: image
-	docker run $(Remove) $(Iterm) $(Volumes) $(ExtraVols) '$(ImageName):$(ImageTag)' '$(RunCommand)'
+	docker run \
+		$(Remove) \
+		$(Iterm) \
+		$(Volumes) \
+		$(CmdMount) \
+		$(ExtraVols) \
+		'$(ImageName):$(ImageTag)' \
+		$(RunCommand)
 

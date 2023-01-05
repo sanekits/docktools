@@ -104,12 +104,13 @@ run_recipe() {
         && cmd+=( "$@" )
 
     cmd+=( container )
-    if [[ -n $run_cmd_filename && -f $run_cmd_filename ]]; then
-        cmd+=( /$(basename ${run_cmd_filename} ) )
+    if [[ -f $run_cmd_filename ]]; then
+        cmd+=( CmdMount=\"-v ${run_cmd_filename}:/cmdline.sh\" )
+        cmd+=( RunCommand=/cmdline.sh )
     fi
 
     echo "${cmd[@]}"
-    #eval "${cmd[@]}"
+    eval "${cmd[@]}"
 }
 
 make_tmp_cmdfile() {
@@ -118,7 +119,7 @@ make_tmp_cmdfile() {
 
     local run_cmd_filename=$(
         mkdir -p ${HOME}/tmp
-        mktemp -p ${HOME}/tmp tmp.${recipe}-cmdline-$(date -Iminutes)-XXXXX.sh
+        mktemp -p ${HOME}/tmp $( echo tmp.${recipe}-cmdline-$(date -Iminutes)-XXXXX.sh | tr ':' '.' )
     ) 2>/dev/null
     [[ -z $run_cmd_filename ]] \
         && die "Failed creating temp cmd file"
