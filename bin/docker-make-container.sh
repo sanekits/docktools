@@ -69,7 +69,20 @@ edit_recipe() {
 
 do_help() {
     [[ $# -eq 0 ]] && {
-        echo "do '--help [recipe-name]' to see help details for a recipe"; return;
+        echo "Help:"
+        local hitems=(
+            "[recipe-name]:               Run recipe now"
+            "[recipe-name] -- <cmd line>: Execute command line in container"
+            "--edit-recipe [recipe-name]: Load recipe makefile into editor"
+            "--list-recipes:              Show available recipes"
+            "--make-recipe [recipe-name]: Create a new recipe from scratch"
+            "--recipe-root:               Show home dir for recipes"
+            "--recipe-path [recipe-name]: Show full path of recipe makefile"
+        )
+        for item in "${hitems[@]}"; do
+            echo "   ${item}"
+        done
+        echo " do '--help [recipe-name]' to see help details for a recipe"; return;
     }
     local recipe="$1"; shift
 
@@ -145,7 +158,7 @@ main() {
             --recipe-path) shift; get_recipe_path "$@"; exit ;;
             --make-recipe) shift; make_recipe "$@"; exit ;;
             --edit-recipe) shift; edit_recipe "$@"; exit ;;
-            -h|--help) shift;  do_help "$@"; exit ;;
+            -h|--help|help) shift;  do_help "$@"; exit ;;
             --)
                 shift;
                 run_cmd_filename=$( recipe="$recipe" make_tmp_cmdfile "$@" )

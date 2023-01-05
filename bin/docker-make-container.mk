@@ -24,13 +24,17 @@ default-help:
 	@echo "Help for recipe $(RecipeName):"
 
 help-options:
-	@echo "  Command line options:"
+	@echo "  Command line options / recipe properties:"
 	@echo "    RunCommand=\"$(RunCommand)\""
 	@echo "      # Set this to define a command to run in the container immediately"
 	@echo "    Shellkits=\"$(Shellkits)\""
 	@echo "      # List of shell kits to install"
-	@echo "    ImagePull=\$(PullImage)
-	@echo "      # Pull image before building container
+	@echo "    ImagePull=\$(PullImage)"
+	@echo "      # Pull image before building container"
+	@echo "    Volumes=\$(Volumes)"
+	@echo "      # List of volumes to mount"
+	@echo "    CmdMount=\$(CmdMount)"
+	@echo "      # Script to mount from host to invoke with RunCommand"
 
 help: default-help help-options
 
