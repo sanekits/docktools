@@ -32,7 +32,6 @@ create_user() {
 }
 
 main() {
-    set -x
     while [[ -n $1 ]]; do
         case $1 in
             --user) XUSER=$2; shift ;;
