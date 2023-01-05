@@ -9,9 +9,12 @@
 
 
 stub922() {
-    return
-    local log=/dev/pts/7
-    echo -n "stub922: " >$log
+    [[ -n $stub922_tty ]] || return  # Define this var like /dev/ttyNN to enable diagnostics
+    stub922_tty=${stub922_tty:-/dev/stderr}
+    local log=/dev/pts/5
+    stub922_cnt=${stub922_cnt:-0}
+    (( stub922_cnt++ ))
+    echo -n "stub922[$stub922_cnt]: " >$log
     printf "<%s> " "$@" >$log
     echo > $log
 }
@@ -51,28 +54,43 @@ _docker_make_container() {
     local dockmk_sh=${HOME}/.local/bin/docktools/docker-make-container.sh
     local cur prev opts
     local main_flags="-h --help --edit-recipe --list-recipes --make-recipe --recipe-path --recipe-root"
-    local recipes=$( $dockmk_sh --list-recipes | tr '\n' ' ' )
+    local recipes=$( ( $dockmk_sh --list-recipes; echo help) | tr '\n' ' ' )
+    local recipe_opts="RunCommand= Volumes="
     COMPREPLY=();
     cur="${COMP_WORDS[COMP_CWORD]}";
     prev="${COMP_WORDS[COMP_CWORD-1]}";
 
-    stub922 ENTRY cur "$cur" prev "$prev" recipes "$recipes"
+    stub922 ENTRY CWORD "$COMP_CWORD" 'cur:' "$cur" 'prev:' "$prev" \
+        $'\n ::recipes:' "$recipes" \
+        $'\n ::main_flags:' "$main_flags" \
+        $'\n ::all' "${COMP_WORDS[COMP_CWORD]}"
 
-    case $cur in
-        -)
-            opts="--recipe-path|--edit-recipe|-h|--help";;
-        *=*)
-            if _word_in_list "$prev" "${recipes}"; then
-                opts="RunCommand= Shellkits= Remove= Iterm= Volumes= ExtraVols= "
-                stub922 VX.2
-            else
-                opts="${recipes} ${main_flags}"
-                stub922 VX.3
-            fi
-            ;;
-    esac
+    if [[ $COMP_CWORD == 1 ]]; then
+        opts=${recipes} ;
+        [[ "$cur" == -* ]] \
+            && opts="${main_flags}"
+
+    elif _word_in_list "--" "${COMP_WORD[@]}"; then
+        # Once the user does --, they're on their own to define the run command
+        opts=""
+    else
+        case $cur in
+            -*)
+                opts="${main_flags}" ;;
+            *=*)
+                if _word_in_list "$prev" "${recipes}"; then
+                    opts="RunCommand= Shellkits= Remove= Iterm= Volumes= ExtraVols= "
+                    stub922 VX.2
+                else
+                    opts="${recipes} ${main_flags}"
+                    stub922 VX.3
+                fi
+                ;;
+        esac
+    fi
     stub922 COMMIT opts "$opts"
     COMPREPLY=($(compgen -W "${opts}" -- "${cur}" ));
+    stub922 $'\n -- end --\n'
     return 0
 }
 
