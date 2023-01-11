@@ -121,6 +121,9 @@ run_recipe() {
         cmd+=( CmdMount=\"-v ${run_cmd_filename}:/cmdline.sh\" )
         cmd+=( RunCommand=/cmdline.sh )
     fi
+    if $keep_container; then
+        cmd+=( Remove='' )
+    fi
 
     #echo "${cmd[@]}"
     eval "${cmd[@]}"
@@ -149,7 +152,7 @@ make_tmp_cmdfile() {
 }
 
 main() {
-    local recipe yesmode run_cmd_filename
+    local recipe yesmode run_cmd_filename keep_contaier=false
 
     while [[ -n $1 ]]; do
         case "$1" in
@@ -158,6 +161,7 @@ main() {
             --recipe-path) shift; get_recipe_path "$@"; exit ;;
             --make-recipe) shift; make_recipe "$@"; exit ;;
             --edit-recipe) shift; edit_recipe "$@"; exit ;;
+            --keep|-k) shift; keep_container=true;;
             -h|--help|help) shift;  do_help "$@"; exit ;;
             --)
                 shift;
@@ -175,7 +179,7 @@ main() {
     done
     [[ -n $recipe ]] \
         || die "No recipe specified"
-    run_recipe $recipe $run_cmd_filename
+    keep_container=$keep_container run_recipe $recipe $run_cmd_filename
     [[ -f $run_cmd_filename ]] \
         && rm $run_cmd_filename
 }
