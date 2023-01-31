@@ -45,6 +45,7 @@ docktools ${ver} help:
    dockstat: alias showing container stats
    docker-history: show container or image history without truncation or junk whitespace
    install-docker-dive.sh: Installs the docker-dive tool from github.com
+   in-container.sh:  Succeeds if running in a Docker container
 EOF
 }
 

@@ -4,14 +4,6 @@ docktools-semaphore() {
     [[ 1 -eq  1 ]]
 }
 
-in_docker_container() {
-    # Sadly this topic is endlessly complex, and we're compromising here.  See https://stackoverflow.com/questions/20010199/how-to-determine-if-a-process-runs-inside-lxc-docker/20010626#20010626
-
-    [[ -f /.dockerenv ]] \
-        &&  return;
-    grep -sq 'docker' /proc/1/cgroup
-}
-
 alias docksh=dockershell.sh
 alias dockmk=docker-make-container.sh
 
@@ -19,6 +11,12 @@ alias dc=docker-compose
 alias docker-containers-status='docker stats --no-stream -a'
 alias dk=docker
 alias dockstat='docker stats --no-stream -a'
+
+alias dock-start='sudo service docker start'
+
+in_docker_container() {
+    ${HOME}/.local/bin/docktools/in-container.sh "$@"
+}
 
 in_docker_container && {
     { unalias dockins; unset dockins; } &>/dev/null
