@@ -46,6 +46,7 @@ docktools ${ver} help:
    docker-history: show container or image history without truncation or junk whitespace
    install-docker-dive.sh: Installs the docker-dive tool from github.com
    in-container.sh:  Succeeds if running in a Docker container
+   getContainerId.sh:  Print container ID from inside the container
 EOF
 }
 

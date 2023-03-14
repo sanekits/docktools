@@ -2,8 +2,9 @@
 # .local/bin on setup
 docktools.sh
 dockershell.sh
+docker-make-container.sh
 docktools-bootstrap-container.sh
 docktools-shellkit-install.sh
+getContainerId.sh
 install-docker-dive.sh
-docker-make-container.sh
 in-container.sh
