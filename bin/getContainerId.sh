@@ -1,3 +1,4 @@
+#!/bin/sh
 # getContainerId.sh
 #  This runs inside the container and prints the container ID
 
@@ -13,7 +14,7 @@ grep -qE 'docker' /proc/self/cgroup && {
     exit
 }
 
-docker info &>/dev/null \
+docker info 2>&1 >/dev/null \
     && exit 1
 
 cat /etc/hostname
