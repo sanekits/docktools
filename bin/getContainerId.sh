@@ -14,7 +14,7 @@ grep -qE 'docker' /proc/self/cgroup && {
 }
 
 docker info &>/dev/null \
-    && exit
+    && exit 1
 
 cat /etc/hostname
 
