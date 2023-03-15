@@ -14,7 +14,9 @@ grep -qE 'docker' /proc/self/cgroup && {
     exit
 }
 
-docker info 2>&1 >/dev/null \
+# If we've gotten this far, it's time to get crude.  This means that if you
+# are doing docker-in-docker, we expect one of the tests above to detect that.
+which docker 2>&1 \
     && exit 1
 
 cat /etc/hostname
