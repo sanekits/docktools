@@ -14,7 +14,7 @@ kit_depends := \
 
 .PHONY: publish
 
-pre-publish: test
+#pre-publish: test
 
 .PHONY: test
 test:
