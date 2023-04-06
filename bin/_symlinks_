@@ -8,3 +8,4 @@ docktools-shellkit-install.sh
 getContainerId.sh
 install-docker-dive.sh
 in-container.sh
+wait-for-container-id.sh
