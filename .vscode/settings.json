@@ -24,7 +24,6 @@
         "terminalCursor.foreground": "#A5A2A2",
         "window.activeBorder": "#00ff00",
         "window.inactiveBorder": "#52309b",
-        "activityBar.background": "#2E3003",
         "titleBar.activeBackground": "#404304",
         "titleBar.activeForeground": "#FBFCD4"
     },

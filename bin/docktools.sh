@@ -47,6 +47,7 @@ docktools ${ver} help:
    install-docker-dive.sh: Installs the docker-dive tool from github.com
    in-container.sh:  Succeeds if running in a Docker container
    getContainerId.sh:  Print container ID from inside the container
+   wait-for-container-id.sh: Watch "docker ps" for expected container, print id
 EOF
 }
 

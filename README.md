@@ -5,7 +5,7 @@
 Download and install the self-extracting setup script:
 
 ```
-curl -L https://github.com/sanekits/docktools/releases/download/0.4.3/docktools-setup-0.4.8.sh \
+curl -L https://github.com/sanekits/docktools/releases/download/0.4.3/docktools-setup-0.4.9.sh \
     -o ~/tmp$$.sh && bash ~/tmp$$.sh && rm ~/tmp$$.sh
 ```
 
