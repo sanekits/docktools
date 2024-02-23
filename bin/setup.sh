@@ -45,23 +45,23 @@ main() {
     builtin cd ${HOME}/.local/bin || die 208
 
     # Fetch completion for docker-compose:
-    mkdir -p ~/.bash_completion.d
-    if which docker-compose &>/dev/null; then
-        if !  HISTFILE= bash -ic 'complete -p docker-compose' &>/dev/null ; then
-            echo "Docker-compose is installed. Attempting to setup shell completion for it:" >&2
-            local xurl="https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose"
-            curl --connect-timeout 3 -I "$xurl" &>/dev/null && {
-                curl -L https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose > ~/.bash_completion.d/docker-compose || echo "ERROR (non-fatal): failed installing shell completion for docker-compose" >&2
-                echo "Shell completion for docker-compose installed: OK"
-            } || {
-                echo "ERROR (non-fatal): can't connect to download docker-compose completion from [ $xurl ]" >&2
-            }
-        else
-            echo "docker-compose with completion is installed."
-        fi
-    else
-        echo "ERROR (non-fatal): docker-compose not installed, so I can't setup shell completion for it."
-    fi
+    # mkdir -p ~/.bash_completion.d
+    # if which docker-compose &>/dev/null; then
+    #     if !  HISTFILE= bash -ic 'complete -p docker-compose' &>/dev/null ; then
+    #         echo "Docker-compose is installed. Attempting to setup shell completion for it:" >&2
+    #         local xurl="https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose"
+    #         curl --connect-timeout 3 -I "$xurl" &>/dev/null && {
+    #             curl -L https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose > ~/.bash_completion.d/docker-compose || echo "ERROR (non-fatal): failed installing shell completion for docker-compose" >&2
+    #             echo "Shell completion for docker-compose installed: OK"
+    #         } || {
+    #             echo "ERROR (non-fatal): can't connect to download docker-compose completion from [ $xurl ]" >&2
+    #         }
+    #     else
+    #         echo "docker-compose with completion is installed."
+    #     fi
+    # else
+    #     echo "ERROR (non-fatal): docker-compose not installed, so I can't setup shell completion for it."
+    # fi
 
     setup_dockmk
 
