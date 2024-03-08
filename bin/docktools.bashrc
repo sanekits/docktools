@@ -7,7 +7,14 @@ docktools-semaphore() {
 alias docksh=dockershell.sh
 alias dockmk=docker-make-container.sh
 
-alias dc=docker-compose
+dc() {
+    which docker-compose &>/dev/null && {
+        command docker-compose "$@"
+    } || {
+        command docker compose "$@"
+    }
+}
+
 alias docker-containers-status='docker stats --no-stream -a'
 alias dk=docker
 alias dockstat='docker stats --no-stream -a'
@@ -26,7 +33,7 @@ in_docker_container && {
 [[ -f ~/.bash_completion.d/docktools ]] \
     && source ~/.bash_completion.d/docktools
 
-docker-history() {
+docker_history() {
     #Help show container or image history without truncation or junk whitespace
     [[ $# -eq 0 ]] && return $(die "Expected container or image name")
     command docker history --no-trunc "$1" | tr -s ' '
