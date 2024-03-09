@@ -64,7 +64,7 @@ main() {
     Script=${scriptName} main_base "$@"
     builtin cd ${HOME}/.local/bin || die 208
 
-
+    install_completion
     setup_dockmk
 
     # FINALIZE: perms on ~/.local/bin/<Kitname>.  We want others/group to be
