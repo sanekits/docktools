@@ -7,19 +7,18 @@ docktools-semaphore() {
 alias docksh=dockershell.sh
 alias dockmk=docker-make-container.sh
 
-dc() {
-    which docker-compose &>/dev/null && {
-        command docker-compose "$@"
-    } || {
-        command docker compose "$@"
-    }
-}
+alias dc='docker compose'
 
 alias docker-containers-status='docker stats --no-stream -a'
 alias dk=docker
 alias dockstat='docker stats --no-stream -a'
 
 alias dock-start='sudo service docker start'
+
+if type -t _complete_alias &>/dev/null; then
+    complete -F _complete_alias dc
+    complete -F _complete_alias dk
+fi
 
 in_docker_container() {
     ${HOME}/.local/bin/docktools/in-container.sh "$@"
