@@ -42,38 +42,21 @@ setup_dockmk() {
 
 install_completion() {
     # Setup shell completion stuff
-    mkdir -p ~/.bash_completion.d
-    if which docker-compose &>/dev/null; then
-        echo "Docker-compose is installed. Attempting to setup shell completion for it:" >&2
-        if !  HISTFILE= bash -ic 'complete ' 2>/dev/null | grep -q docker-compose &>/dev/null ; then
-            # We don't already have completion setup for this.  The script is fetchable though:
-            local xurl="https://raw.githubusercontent.com/docker/compose/$(docker-compose version --short)/contrib/completion/bash/docker-compose"
-            curl --connect-timeout 3 -I "$xurl" &>/dev/null && {
-                curl -kL "$xurl"  > ~/tmp-docker-compose-completion || {
-                    echo "ERROR (non-fatal) failed fetching shell completions for docker-compose" >&2
-                    false; return
-                }
-                ## ~/.bash_completion.d/docker-compose || echo "ERROR (non-fatal): failed installing shell completion for docker-compose" >&2
-                # Can we successfully source this thing?
-                (
-                    set -ue
-                    source ~/tmp-docker-compose-completion
-                    complete | grep -q docker-compose
-                    mv ~/tmp-docker-compose-completion ~/.bash_completion.d/docker-compose
-                ) || {
-                    echo "ERROR (non-fatal): can't source completions for docker-compose" >&2
-                    false; return
-                }
-
-                echo "Shell completion for docker-compose installed: OK"
-            } || {
-                echo "ERROR (non-fatal): can't connect to download docker-compose completion from [ $xurl ]" >&2
+    HISTFILE= bash -ic 'complete'  2>/dev/null | awk '/docker$/ {print $NF}' | grep -q docker
+    if [[ $? -ne 0 ]]; then
+        # We don't already have completion setup for this.  We do bundle the upstream
+        # completion script though:
+        mkdir -p ~/.bash_completion.d
+        cd ~/.bash_completion.d && {
+            local cxloc=${HOME}/.local/bin/docktools/docker.bashrc
+            ln -sf ${cxloc} ./docker || {
+                echo "Failed to symlink from $PWD" >&2
+                false; return;
             }
-        else
-            echo "docker-compose with completion is installed."
-        fi
+            echo "Shell completion for docker installed: OK"
+        }
     else
-        echo "ERROR (non-fatal): docker-compose not installed, so I can't setup shell completion for it."
+        echo "docker completion is already installed."
     fi
 }
 
