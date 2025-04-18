@@ -2,7 +2,7 @@
 
 # Running docktools-version.sh is the correct way to
 # get the home install path for the tool
-KitVersion=0.5.6
+KitVersion=0.5.8
 
 # The shellkit/ tooling naturally evolves out from under the dependent kits.  ShellkitSetupVers allows
 # detecting the need for refresh of templates/* derived files.  To bump the root version, 
